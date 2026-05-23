@@ -558,23 +558,13 @@ tr:hover td{background:var(--areia);}
     <div class="pw-game-card" id="serra-game-block">
       <div class="pw-game-intro"><div><div class="pw-game-title">TD 8 — Serra da Capivara · Protótipo navegável</div><div class="pw-game-sub">Use a Jurema para explorar o território. Clique nos pontos luminosos para abrir as missões já cadastradas.</div></div><span class="badge bg">Ambiente jogável</span></div>
       <div class="pw-game-layout">
-        <div class="game-stage" id="serra-game-stage" tabindex="0" aria-label="Mapa jogável da Serra da Capivara">
-          <div class="soil-patch s1"></div><div class="soil-patch s2"></div><div class="soil-patch s3"></div><div class="soil-patch s4"></div><div class="soil-patch s5"></div>
-          <div class="game-path path-main"></div><div class="game-path path-branch1"></div><div class="game-path path-branch2"></div><div class="game-path path-branch3"></div><div class="game-path path-entry"></div>
-          <img id="sprite-house" class="game-sprite sprite-house" alt="Casa base">
-          <img id="sprite-hive" class="game-sprite sprite-hive" alt="Colmeia">
-          <img id="sprite-wall" class="game-sprite sprite-wall" alt="Arco rochoso da Serra da Capivara">
-          <img id="sprite-cactus-a" class="game-sprite sprite-cactus a" alt="Cacto">
-          <img id="sprite-cactus-b" class="game-sprite sprite-cactus b" alt="Cacto">
-          <img id="sprite-rocks" class="game-sprite sprite-rocks" alt="Conjunto de rochas da Serra da Capivara">
-          <img id="sprite-cave-small" class="game-sprite sprite-cave-small" alt="Abrigo rochoso">
-          <img id="sprite-pillar" class="game-sprite sprite-pillar" alt="Pilar rochoso">
-          <button class="mission-hotspot hot-m1" onclick="startWorldMission('m1')">🖼 Arqueologia</button>
-          <button class="mission-hotspot hot-m2" onclick="startWorldMission('m2')">🍯 Mel e Quilombo</button>
-          <button class="mission-hotspot hot-m3" onclick="startWorldMission('m3')">🏺 Cerâmica</button>
-          <button class="mission-hotspot hot-info" onclick="worldInfoMuseu()">🏛 Museu</button>
-          <img id="world-avatar" class="world-avatar" alt="Jurema exploradora">
-          <div class="world-hint" id="world-hint">Use as setas ou WASD para mover a Jurema. Clique em uma missão para jogar.</div>
+        <div class="game-stage" id="serra-game-stage">
+          <iframe
+            src="./JogoWeb/index.html"
+            style="width:100%; height:100%; border:none; display:block;"
+            allow="autoplay; fullscreen; pointer-lock"
+            sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-downloads">
+          </iframe>
         </div>
         <aside class="world-side" id="world-side">
           <h3>Jornada da Jurema</h3>
@@ -792,7 +782,51 @@ function go(v){
     initSerraWorld();
     b1.onclick=()=>{ const q=document.getElementById('world-quiz'); if(q) q.scrollIntoView({behavior:'smooth',block:'nearest'}); };
     b2.onclick=()=>go('piauiworld');
-    setTimeout(()=>{ const stage=document.getElementById('serra-game-stage'); if(stage) stage.focus({preventScroll:true}); },50);
+    setTimeout(()=>{
+  const stage = document.getElementById('serra-game-stage');
+  const iframe = document.querySelector('#serra-game-stage iframe');
+  if(!stage || !iframe) return;
+
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:absolute; inset:0; z-index:10; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,0.35);
+  `;
+  overlay.innerHTML = '<div style="background:#fff;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:600;">▶ Clique para jogar</div>';
+
+  overlay.addEventListener('click', ()=>{
+    overlay.remove();
+    iframe.contentWindow.focus();
+
+    // Clica no canvas do Godot diretamente (funciona por ser mesmo servidor)
+    try {
+      const canvas = iframe.contentDocument.querySelector('canvas');
+      if(canvas){
+        canvas.focus();
+        canvas.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+      }
+    } catch(err) { console.warn('canvas click:', err); }
+  });
+
+  stage.style.position = 'relative';
+  stage.appendChild(overlay);
+}, 500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
   }
   if(v==='territorios')renderTDs();
   if(v==='missoes')renderMissoesLista();
@@ -1289,32 +1323,120 @@ function generateAiRoute(){
   const data = ROTEIRO_AI_DATA[selectedWorldTD] || {municipios:[],atrativos:[]};
   if(!result || !td) return;
   result.innerHTML = `<div class="ai-route-empty">🌿 Jurema está analisando ${city}, cruzando vocações do TD ${td.num}, tempo disponível e perfil da experiência...</div>`;
-  setTimeout(()=>{
-    const stops = buildAiStops(city, data, profile, time);
-    const title = `Roteiro ${profile} em ${city}`;
-    const xp = 120 + (stops.length * 40);
-    const meta = `TD ${td.num} · ${td.nome} · ${time} · ${transport} · ${stops.length} paradas · +${xp} XP`;
-    const stopsHtml = stops.map((s,i)=>`
+
+
+
+  const OPENAI_KEY = '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'; // ← sua chave aqui
+
+  async function generateAiRoute(){
+  const city      = document.getElementById('ai-city')?.value || '';
+  const time      = document.getElementById('ai-time')?.value || '1 dia';
+  const profile   = document.getElementById('ai-profile')?.value || 'cultura e história';
+  const transport = document.getElementById('ai-transport')?.value || 'carro próprio';
+  const result    = document.getElementById('ai-route-result');
+  const td        = TDs[selectedWorldTD - 1];
+  const data      = ROTEIRO_AI_DATA[selectedWorldTD] || {municipios:[],atrativos:[]};
+  if(!result || !td) return;
+
+  result.innerHTML = `<div class="ai-route-empty">🌿 Jurema está analisando ${city}, cruzando vocações do TD ${td.num}, tempo disponível e perfil da experiência...</div>`;
+
+  const prompt = `
+Você é a Jurema, guia cultural e turística do Piauí, Brasil.
+Monte um roteiro turístico detalhado saindo ESPECIFICAMENTE de ${city}.
+
+REGRAS OBRIGATÓRIAS:
+- A primeira parada deve ser em ${city} ou em até 30km dela
+- Adapte as paradas à distância real de ${city} até os atrativos
+- Se o transporte for "a pé", priorize atrativos dentro ou próximos de ${city}
+- Não repita sempre os mesmos lugares. Varie conforme a cidade escolhida
+- Território de referência: TD ${td.num} — ${td.nome}
+- Tempo disponível: ${time}
+- Transporte: ${transport}
+- Perfil da experiência: ${profile}
+
+
+Responda APENAS em JSON válido, sem texto fora do JSON, neste formato exato:
+{
+  "titulo": "Nome do roteiro",
+  "paradas": [
+    {
+      "emoji": "🏛",
+      "nome": "Nome do local",
+      "desc": "Descrição breve e cultural do local",
+      "tempo": "X horas"
+    }
+  ],
+  "dica": "Dica final da Jurema em tom acolhedor"
+}
+
+Use entre 3 e 5 paradas. Foque em atrações reais próximas de ${city}. NUNCA repita os mesmos lugares independente da cidade escolhida.
+`;
+
+  try {
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 1000,
+        temperature: 0.8
+      })
+    });
+
+    const data = await res.json();
+    const texto = data.choices[0].message.content;
+    const clean = texto.replace(/```json|```/g, '').trim();
+    const roteiro = JSON.parse(clean);
+
+    const xp = 120 + (roteiro.paradas.length * 40);
+    const meta = `TD ${td.num} · ${td.nome} · ${time} · ${transport} · ${roteiro.paradas.length} paradas · +${xp} XP`;
+
+    const stopsHtml = roteiro.paradas.map((s, i) => `
       <div class="ai-stop">
-        <div class="ai-stop-num">${i+1}</div>
-        <div class="ai-stop-body"><strong>${s.emoji || '📍'} ${s.nome}</strong><span>${s.desc}</span><span><b>Tempo sugerido:</b> ${s.tempo}</span></div>
+        <div class="ai-stop-num">${i + 1}</div>
+        <div class="ai-stop-body">
+          <strong>${s.emoji || '📍'} ${s.nome}</strong>
+          <span>${s.desc}</span>
+          <span><b>Tempo sugerido:</b> ${s.tempo}</span>
+        </div>
       </div>
     `).join('');
+
     result.innerHTML = `
       <div class="ai-route-result">
         <div class="ai-route-head">
           <div class="ai-route-icon">🧭</div>
-          <div><div class="ai-route-name">${title}</div><div class="ai-route-meta">${meta}</div></div>
+          <div>
+            <div class="ai-route-name">${roteiro.titulo}</div>
+            <div class="ai-route-meta">${meta}</div>
+          </div>
         </div>
         <div class="ai-stop-list">${stopsHtml}</div>
-        <div class="ai-route-tip"><strong>Dica da Jurema:</strong> confirme horários, acessos, condutores locais e condições de estrada antes da visita. O roteiro é uma curadoria inicial do protótipo e pode ser refinado com dados reais da secretaria, guias e parceiros locais.</div>
+        <div class="ai-route-tip"><strong>Dica da Jurema:</strong> ${roteiro.dica}</div>
         <div class="ai-route-actions">
           <button class="btn btn-primary" onclick="saveAiRouteXP(${xp})">Salvar roteiro e ganhar XP</button>
-          ${selectedWorldTD===8?'<button class="btn btn-ocre" onclick="showSerraGame()">Abrir ambiente jogável</button>':''}
+          ${selectedWorldTD === 8 ? '<button class="btn btn-ocre" onclick="showSerraGame()">Abrir ambiente jogável</button>' : ''}
         </div>
       </div>
     `;
-  }, 650);
+
+  } catch(err) {
+    result.innerHTML = `<div class="ai-route-empty">⚠️ Erro ao gerar roteiro. Verifique sua API key ou conexão.</div>`;
+    console.error(err);
+  }
+}
+
+
+
+
+
+
+
+
 }
 function buildAiStops(city, data, profile, time){
   const cityStops = (data.atrativos || []).filter(a => a.cidade === city);
