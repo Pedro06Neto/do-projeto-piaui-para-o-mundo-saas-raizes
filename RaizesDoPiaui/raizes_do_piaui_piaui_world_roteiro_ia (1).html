@@ -1196,7 +1196,7 @@ function renderWorldPanel(){
     <div class="pw-tabs">
       <button class="pw-tab ${selectedWorldTab==='resumo'?'active':''}" onclick="setWorldTab('resumo')">Resumo</button>
       <button class="pw-tab ${selectedWorldTab==='roteiro'?'active':''}" onclick="setWorldTab('roteiro')">Roteiro IA</button>
-      <button class="pw-tab ${selectedWorldTab==='missoes'?'active':''}" onclick="setWorldTab('missoes')">Missões</button>
+      <button class="pw-tab" onclick="go('missoes')">Missões</button>
       <button class="pw-tab ${selectedWorldTab==='jogar'?'active':''}" onclick="setWorldTab('jogar')">Jogar</button>
     </div>
     <div class="pw-tab-content" id="pw-tab-content"></div>
@@ -1232,7 +1232,6 @@ function renderWorldTabContent(){
   }else if(selectedWorldTab==='roteiro'){
     content.innerHTML = `<div id="ai-route-box"></div>`;
     renderAiRouteForm();
-  }else if(selectedWorldTab==='missoes'){
   }else if(selectedWorldTab==='missoes'){
     content.innerHTML = ativo ? `
       <button class="pw-mini-mission" onclick="startWorldMissionFromPanel('m1')"><span class="mi">🖼</span><span><strong>Arqueologia e UNESCO</strong><span>Pinturas rupestres, Pedra Furada e patrimônio mundial.</span></span><span class="xp">+250 XP</span></button>
@@ -1313,22 +1312,9 @@ function fillAiRouteExample(city){
   if(cityEl) cityEl.value = city;
   generateAiRoute();
 }
-function generateAiRoute(){
-  const city = document.getElementById('ai-city')?.value || '';
-  const time = document.getElementById('ai-time')?.value || '1 dia';
-  const profile = document.getElementById('ai-profile')?.value || 'cultura e história';
-  const transport = document.getElementById('ai-transport')?.value || 'carro próprio';
-  const result = document.getElementById('ai-route-result');
-  const td = TDs[selectedWorldTD-1];
-  const data = ROTEIRO_AI_DATA[selectedWorldTD] || {municipios:[],atrativos:[]};
-  if(!result || !td) return;
-  result.innerHTML = `<div class="ai-route-empty">🌿 Jurema está analisando ${city}, cruzando vocações do TD ${td.num}, tempo disponível e perfil da experiência...</div>`;
+const OPENAI_KEY = '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';
 
-
-
-  const OPENAI_KEY = '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'; // ← sua chave aqui
-
-  async function generateAiRoute(){
+async function generateAiRoute(){
   const city      = document.getElementById('ai-city')?.value || '';
   const time      = document.getElementById('ai-time')?.value || '1 dia';
   const profile   = document.getElementById('ai-profile')?.value || 'cultura e história';
@@ -1354,7 +1340,6 @@ REGRAS OBRIGATÓRIAS:
 - Transporte: ${transport}
 - Perfil da experiência: ${profile}
 
-
 Responda APENAS em JSON válido, sem texto fora do JSON, neste formato exato:
 {
   "titulo": "Nome do roteiro",
@@ -1373,12 +1358,9 @@ Use entre 3 e 5 paradas. Foque em atrações reais próximas de ${city}. NUNCA r
 `;
 
   try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    const res = await fetch('/api/openai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_KEY}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
@@ -1387,8 +1369,13 @@ Use entre 3 e 5 paradas. Foque em atrações reais próximas de ${city}. NUNCA r
       })
     });
 
-    const data = await res.json();
-    const texto = data.choices[0].message.content;
+    const json = await res.json();
+    if(!res.ok){
+      const msg = json?.error?.message || `HTTP ${res.status}`;
+      result.innerHTML = `<div class="ai-route-empty">⚠️ Erro da API OpenAI: ${msg}</div>`;
+      return;
+    }
+    const texto = json.choices[0].message.content;
     const clean = texto.replace(/```json|```/g, '').trim();
     const roteiro = JSON.parse(clean);
 
@@ -1425,18 +1412,9 @@ Use entre 3 e 5 paradas. Foque em atrações reais próximas de ${city}. NUNCA r
     `;
 
   } catch(err) {
-    result.innerHTML = `<div class="ai-route-empty">⚠️ Erro ao gerar roteiro. Verifique sua API key ou conexão.</div>`;
+    result.innerHTML = `<div class="ai-route-empty">⚠️ Erro: ${err.message || err}. Verifique sua API key ou conexão.</div>`;
     console.error(err);
   }
-}
-
-
-
-
-
-
-
-
 }
 function buildAiStops(city, data, profile, time){
   const cityStops = (data.atrativos || []).filter(a => a.cidade === city);
