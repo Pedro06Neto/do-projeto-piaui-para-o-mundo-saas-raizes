@@ -3,6 +3,21 @@ import json
 import os
 import urllib.request
 
+
+def load_dotenv(path):
+    if not os.path.exists(path):
+        return
+    with open(path, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#') or '=' not in line:
+                continue
+            key, value = line.split('=', 1)
+            key = key.strip()
+            value = value.strip().strip('"\'"')
+            if key and key not in os.environ:
+                os.environ[key] = value
+
 load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 GROQ_KEY = os.getenv('GROQ_KEY')
@@ -33,7 +48,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         length = int(self.headers.get('Content-Length', 0))
         body = json.loads(self.rfile.read(length))
-        body['model'] = 'llama-3.3-70b-versatile'
+        if 'model' not in body:
+            body['model'] = 'llama-3.3-70b-versatile'
 
         payload = json.dumps(body).encode('utf-8')
         req = urllib.request.Request(
@@ -42,6 +58,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             headers={
                 'Authorization': f'Bearer {GROQ_KEY}',
                 'Content-Type': 'application/json',
+                'User-Agent': 'groq-python/0.11.0',
             },
             method='POST',
         )

@@ -1312,8 +1312,6 @@ function fillAiRouteExample(city){
   if(cityEl) cityEl.value = city;
   generateAiRoute();
 }
-const OPENAI_KEY = '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';
-
 async function generateAiRoute(){
   const city      = document.getElementById('ai-city')?.value || '';
   const time      = document.getElementById('ai-time')?.value || '1 dia';
@@ -1323,6 +1321,11 @@ async function generateAiRoute(){
   const td        = TDs[selectedWorldTD - 1];
   const data      = ROTEIRO_AI_DATA[selectedWorldTD] || {municipios:[],atrativos:[]};
   if(!result || !td) return;
+
+  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    result.innerHTML = `<div class="ai-route-empty">⚠️ IA só funciona quando o site estiver rodando localmente em <strong>http://localhost:3000/</strong>. Abra o servidor Python para usar a Jurema IA.</div>`;
+    return;
+  }
 
   result.innerHTML = `<div class="ai-route-empty">🌿 Jurema está analisando ${city}, cruzando vocações do TD ${td.num}, tempo disponível e perfil da experiência...</div>`;
 
@@ -1362,14 +1365,20 @@ Use entre 3 e 5 paradas. Foque em atrações reais próximas de ${city}. NUNCA r
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 1000,
         temperature: 0.8
       })
     });
 
-    const json = await res.json();
+    let json;
+    try {
+      json = await res.json();
+    } catch (parseErr) {
+      throw new Error('Resposta inválida do servidor: não é JSON. Verifique se o backend está rodando em http://localhost:3000/');
+    }
+
     if(!res.ok){
       const msg = json?.error?.message || `HTTP ${res.status}`;
       result.innerHTML = `<div class="ai-route-empty">⚠️ Erro da API OpenAI: ${msg}</div>`;
