@@ -17,17 +17,19 @@ Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvime
 | Frontend | HTML5, CSS3, JavaScript (vanilla) |
 | Tipografia | Google Fonts — Sora + Crimson Pro |
 | IA | [Groq API](https://console.groq.com) — modelo `llama-3.3-70b-versatile` |
-| Backend | Python 3 (http.server — biblioteca padrão) |
+| Servidor | Python 3 (http.server — biblioteca padrão) |
 | Jogo | Godot Engine 4 exportado para Web (WebAssembly) |
 | Hospedagem | Render.com (servidor) + GitHub Pages (estático) |
 
-## Como executar localmente
+## Como executar
 ## Deploy (Render.com)
 
 O servidor está hospedado no Render. Acesse o link
 
+## Como executar localmente
 ```
 https://raizes-do-piaui.onrender.com/
+
 
 ### Pré-requisitos
 
