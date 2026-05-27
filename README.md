@@ -25,10 +25,11 @@ Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvime
 ## Deploy (Render.com)
 
 O servidor está hospedado no Render. Acesse o link
+https://raizes-do-piaui.onrender.com/
 
 ## Como executar localmente
 ```
-https://raizes-do-piaui.onrender.com/
+
 
 
 ### Pré-requisitos
