@@ -1322,10 +1322,6 @@ async function generateAiRoute(){
   const data      = ROTEIRO_AI_DATA[selectedWorldTD] || {municipios:[],atrativos:[]};
   if(!result || !td) return;
 
-  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-    result.innerHTML = `<div class="ai-route-empty">⚠️ IA só funciona quando o site estiver rodando localmente em <strong>http://localhost:3000/</strong>. Abra o servidor Python para usar a Jurema IA.</div>`;
-    return;
-  }
 
   result.innerHTML = `<div class="ai-route-empty">🌿 Jurema está analisando ${city}, cruzando vocações do TD ${td.num}, tempo disponível e perfil da experiência...</div>`;
 
@@ -1376,7 +1372,7 @@ Use entre 3 e 5 paradas. Foque em atrações reais próximas de ${city}. NUNCA r
     try {
       json = await res.json();
     } catch (parseErr) {
-      throw new Error('Resposta inválida do servidor: não é JSON. Verifique se o backend está rodando em http://localhost:3000/');
+      throw new Error('Resposta inválida do servidor. Tente novamente.');
     }
 
     if(!res.ok){
