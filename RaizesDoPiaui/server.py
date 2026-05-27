@@ -22,7 +22,7 @@ load_dotenv(os.path.join(os.path.dirname(__file__), '..', '.env'))
 
 GROQ_KEY = os.getenv('GROQ_KEY')
 GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
-PORT = 3000
+PORT = int(os.getenv('PORT', 3000))
 
 MIME = {
     '.html': 'text/html; charset=utf-8',
