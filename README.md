@@ -22,6 +22,12 @@ Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvime
 | Hospedagem | Render.com (servidor) + GitHub Pages (estático) |
 
 ## Como executar localmente
+## Deploy (Render.com)
+
+O servidor está hospedado no Render. Acesse o link
+
+```
+https://raizes-do-piaui.onrender.com/
 
 ### Pré-requisitos
 
@@ -48,16 +54,8 @@ python server.py
 http://localhost:3000
 ```
 
-> A Jurema IA só funciona com o servidor Python rodando. O jogo e o painel funcionam sem o servidor.
+> A Jurema IA funciona com o servidor Python rodando. O jogo e o painel funcionam sem o servidor.
 
-## Deploy (Render.com)
-
-O servidor está configurado para detectar a variável `PORT` automaticamente, compatível com Render, Railway e similares.
-
-Basta configurar a variável de ambiente `GROQ_KEY` no painel da plataforma escolhida e usar o comando de start:
-
-```
-python RaizesDoPiaui/server.py
 ```
 
 ## Versão
