@@ -66,4 +66,4 @@ http://localhost:3000
 
 
 
-<img width="1198" height="673" alt="WhatsApp Image 2026-05-27 at 20 54 29" src="https://github.com/user-attachments/assets/07999414-7349-4bfe-a205-2118541ab848" />
+![Descrição](assets/<img width="1198" height="673" alt="WhatsApp Image 2026-05-27 at 20 54 29" src="https://github.com/user-attachments/assets/07999414-7349-4bfe-a205-2118541ab848" />)
