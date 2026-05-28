@@ -1,4 +1,4 @@
-# Raízes do Piauí — SaaS Cultural
+# Raízes do Piauí — Plataforma SaaS de gamifição com inteligência artificial para valorização cultural, economia criativa e turismo.
 
 Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvimento do Piauí em experiências digitais. Combina um mapa jogável, missões culturais e a **Jurema IA**  uma assistente que gera roteiros turísticos personalizados com base em atrativos ambientais, culturais, históricos, religiosos e produtivos de cada território.
 
@@ -42,7 +42,7 @@ https://raizes-do-piaui.onrender.com/
 Crie um arquivo `.env` na raiz do projeto (um nível acima desta pasta) com o conteúdo:
 
 ```
-GROQ_KEY=gsk_sua_chave_aqui
+GROQ_KEY=gsk_a_gente_vai_mandar_se_for_o_caso_de_rodar_localmente
 ```
 
 ### 2. Inicie o servidor
