@@ -56,7 +56,7 @@ http://localhost:3000
 
 > A Jurema IA funciona com o servidor Python rodando. O jogo e o painel funcionam sem o servidor.
 
-```
+
 
 
 ## Versão
@@ -67,3 +67,4 @@ http://localhost:3000
 
 
 https://drive.google.com/drive/folders/1H2ZXzQmQw6quDxXI1t2ApFfZ79KV86NE?usp=sharing
+<img width="1198" height="673" alt="DiagramaDeArquitetura" src="https://github.com/user-attachments/assets/aac029fe-d41b-4c16-bd53-e1aa1e56edf1" />
