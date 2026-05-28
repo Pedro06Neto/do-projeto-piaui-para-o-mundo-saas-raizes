@@ -63,4 +63,7 @@ http://localhost:3000
 
 **v1.2 MVP — PIT 2026**
 # Raízes do Piauí — Plataforma SaaS de gamifição com inteligência artificial para valorização cultural, economia criativa e turismo.
+
+
+
 <img width="1198" height="673" alt="WhatsApp Image 2026-05-27 at 20 54 29" src="https://github.com/user-attachments/assets/07999414-7349-4bfe-a205-2118541ab848" />
