@@ -1,3 +1,4 @@
+<img width="1198" height="673" alt="WhatsApp Image 2026-05-27 at 20 54 29" src="https://github.com/user-attachments/assets/07999414-7349-4bfe-a205-2118541ab848" />
 # Raízes do Piauí — Plataforma SaaS de gamifição com inteligência artificial para valorização cultural, economia criativa e turismo.
 
 Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvimento do Piauí em experiências digitais. Combina um mapa jogável, missões culturais e a **Jurema IA**  uma assistente que gera roteiros turísticos personalizados com base em atrativos ambientais, culturais, históricos, religiosos e produtivos de cada território.
