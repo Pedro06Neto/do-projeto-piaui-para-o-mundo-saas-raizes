@@ -60,10 +60,6 @@ http://localhost:3000
 
 
 
-## Versão
-
-**v1.2 MVP — PIT 2026**
-
 
 
 ##Documentação do projeto 
@@ -73,3 +69,8 @@ https://drive.google.com/drive/folders/1H2ZXzQmQw6quDxXI1t2ApFfZ79KV86NE?usp=sha
 Diagrama de arquitetura
 
 <img width="1198" height="673" alt="DiagramaDeArquitetura" src="https://github.com/user-attachments/assets/aac029fe-d41b-4c16-bd53-e1aa1e56edf1" />
+
+
+## Versão
+
+**v1.2 MVP — PIT 2026**
