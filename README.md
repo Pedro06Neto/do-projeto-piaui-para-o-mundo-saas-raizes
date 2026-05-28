@@ -7,7 +7,6 @@ Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvime
 - **Piauí World** — mapa interativo com os 12 Territórios de Desenvolvimento
 - **Roteiro IA (Jurema)** — geração de roteiros turísticos com inteligência artificial
 - **Missões culturais** — desafios e conquistas por território
-- **Dashboard institucional** — painel de gestão com clientes, licenciamento e relatórios
 - **Jogo web** — experiência jogável integrada (Godot Engine exportado para Web)
 
 ## Tecnologias
