@@ -19,8 +19,8 @@ Plataforma cultural interativa que transforma os 12 Territórios de Desenvolvime
 | Jogo | Godot Engine 4 exportado para Web (WebAssembly) |
 | Hospedagem | Render.com (servidor) + GitHub Pages (estático) |
 
-## Como executar
-## Deploy (Render.com)
+## Como executar Web
+# Render.com
 
 O servidor está hospedado no Render. Acesse o link
 https://raizes-do-piaui.onrender.com/
